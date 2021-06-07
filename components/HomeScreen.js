@@ -7,6 +7,8 @@ import {
   Image,
   FlatList,
   ScrollView,
+  TouchableOpacity,
+  TextInput,
 } from "react-native";
 import AppLoading from "expo-app-loading";
 import { useFonts } from "expo-font";
@@ -15,7 +17,7 @@ import popularData from "../assets/data/popularData";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import colors from "../assets/colors";
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
   const renderCategoryItem = ({ item }) => {
     return (
       <View
@@ -84,7 +86,7 @@ const HomeScreen = () => {
           <View style={styles.searchWrapper}>
             <Feather name="search" size={18} color={colors.textDark} />
             <View style={styles.search}>
-              <Text style={styles.searchText}>Search</Text>
+              <TextInput style={styles.searchText} placeholder="Search" />
             </View>
           </View>
           {/* Categories */}
@@ -104,51 +106,66 @@ const HomeScreen = () => {
           <View style={styles.popularWrapper}>
             <Text style={styles.popularTitle}>Popular</Text>
             {popularData.map((item) => (
-              <View
+              <TouchableOpacity
                 key={item.id}
-                style={[
-                  styles.popularCardWrapper,
-                  { marginTop: item.id == 1 ? 10 : 3 },
-                ]}
+                onPress={() =>
+                  navigation.navigate("DetailScreen", { item: item })
+                }
               >
-                <View>
+                <View
+                  style={[
+                    styles.popularCardWrapper,
+                    { marginTop: item.id == 1 ? 10 : 3 },
+                  ]}
+                >
                   <View>
-                    <View style={styles.popularTopWrapper}>
-                      <MaterialCommunityIcons
-                        name="crown"
-                        size={14}
-                        color={colors.primary}
-                      />
-                      <Text style={styles.popularTopText}>top of the week</Text>
+                    <View>
+                      <View style={styles.popularTopWrapper}>
+                        <MaterialCommunityIcons
+                          name="crown"
+                          size={14}
+                          color={colors.primary}
+                        />
+                        <Text style={styles.popularTopText}>
+                          top of the week
+                        </Text>
+                      </View>
+                      <View style={styles.popularTitlesWrapper}>
+                        <Text style={styles.popularTitlesTitle}>
+                          {item.title}
+                        </Text>
+                        <Text style={styles.popularTitlesWeight}>
+                          Weight {item.weight}
+                        </Text>
+                      </View>
                     </View>
-                    <View style={styles.popularTitlesWrapper}>
-                      <Text style={styles.popularTitlesTitle}>
-                        {item.title}
-                      </Text>
-                      <Text style={styles.popularTitlesWeight}>
-                        Weight {item.weight}
-                      </Text>
+                    <View style={styles.popularCardBottom}>
+                      <View style={styles.addPizzaButton}>
+                        <Feather
+                          name="plus"
+                          size={12}
+                          color={colors.textDark}
+                        />
+                      </View>
+                      <View style={styles.ratingWrapper}>
+                        <MaterialCommunityIcons
+                          name="star"
+                          size={12}
+                          color={colors.textDark}
+                        />
+                        <Text style={styles.rating}>{item.rating}</Text>
+                      </View>
                     </View>
                   </View>
-                  <View style={styles.popularCardBottom}>
-                    <View style={styles.addPizzaButton}>
-                      <Feather name="plus" size={12} color={colors.textDark} />
-                    </View>
-                    <View style={styles.ratingWrapper}>
-                      <MaterialCommunityIcons
-                        name="star"
-                        size={12}
-                        color={colors.textDark}
-                      />
-                      <Text style={styles.rating}>{item.rating}</Text>
-                    </View>
-                  </View>
-                </View>
 
-                <View style={styles.popularCardRight}>
-                  <Image source={item.image} style={styles.popularCardImage} />
+                  <View style={styles.popularCardRight}>
+                    <Image
+                      source={item.image}
+                      style={styles.popularCardImage}
+                    />
+                  </View>
                 </View>
-              </View>
+              </TouchableOpacity>
             ))}
           </View>
         </ScrollView>
@@ -167,7 +184,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     paddingHorizontal: 20,
-    paddingTop: 45,
+    paddingTop: 50,
     alignItems: "center",
   },
   profileImage: {
@@ -205,7 +222,7 @@ const styles = StyleSheet.create({
   searchText: {
     fontFamily: "Montserrat-SemiBold",
     fontSize: 14,
-    marginBottom: 5,
+    marginBottom: 1,
     color: colors.textLight,
   },
   categoriesWrapper: {
@@ -232,6 +249,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 10,
     elevation: 2,
+    marginBottom: 12,
   },
   categoryImage: {
     width: 60,
